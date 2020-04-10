@@ -25,7 +25,7 @@ de diseño, en la Especialización de Arquitectura de Software Empresarial 2020 
     </tr>
     <tr>
         <td>/request-quotation/{filter}</td>
-        <td>Recupera el listado de solicitudes de cotizacion por un filtro dado. Validdos:<br>
+        <td>Recupera el listado de solicitudes de cotizacion por un filtro dado. Validos:<br>
             CATEGORY,
             ID,
             PERSON,
@@ -38,7 +38,28 @@ de diseño, en la Especialización de Arquitectura de Software Empresarial 2020 
     </tr>
     <tr>
         <td>/request-quotation</td>
-        <td>Recupera el listado de productos o servicios por una categoria dada</td>
+        <td>Crear una nueva solicitud de cotización</td>
+        <td>POST</td>
+        <td>201 - CREATED -</td>
+        <td>406 - NOT_ACCEPTABLE - Datos de creación invalidos</td>
+    </tr>
+    <tr>
+        <td>/quotation/{filter}</td>
+        <td>Recupera el listado de cotizacion por un filtro dado. Validos:<br>
+            ID,
+            CATEGORY,
+            PERSON,
+            PROVIDER,
+                PERSON_CATEGORY,
+                REQUEST;
+        </td>
+        <td>GET</td>
+        <td>200 - OK -</td>
+        <td>400 - BAD_REQUEST - El filtro contiene valores incorrectos</td>
+    </tr>
+    <tr>
+        <td>/quotation</td>
+        <td>Crear una nueva cotización</td>
         <td>POST</td>
         <td>201 - CREATED -</td>
         <td>406 - NOT_ACCEPTABLE - Datos de creación invalidos</td>

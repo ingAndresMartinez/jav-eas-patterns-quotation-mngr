@@ -19,7 +19,7 @@ public class RequestQuotationController {
     private IRequestQuotationService requestQuotationService;
 
     @GetMapping("/{filter}")
-    public ResponseEntity<Object> getQuotationByFilter(@PathVariable ERequestFilter filter, @RequestBody FindRequestQuotationDto findRequestQuotationDto) {
+    public ResponseEntity<Object> getRequestQuotationByFilter(@PathVariable ERequestFilter filter, @RequestBody FindRequestQuotationDto findRequestQuotationDto) {
         try {
             List<RequestQuotationWrapperDto> bodyResponse = requestQuotationService.findRequestQuotationByFilter(filter, findRequestQuotationDto);
             return new ResponseEntity<>(bodyResponse, HttpStatus.OK);
@@ -29,7 +29,7 @@ public class RequestQuotationController {
     }
 
     @PostMapping
-    public ResponseEntity<Object> createQuotation(@RequestBody RequestQuotationWrapperDto requestQuotationWrapperDto) {
+    public ResponseEntity<Object> createRequestQuotation(@RequestBody RequestQuotationWrapperDto requestQuotationWrapperDto) {
         try {
             RequestQuotationWrapperDto bodyResponse = requestQuotationService.createRequestQuotation(requestQuotationWrapperDto);
             return new ResponseEntity<>(bodyResponse, HttpStatus.CREATED);
