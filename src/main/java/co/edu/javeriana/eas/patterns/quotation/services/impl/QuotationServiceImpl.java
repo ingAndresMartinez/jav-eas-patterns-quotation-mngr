@@ -5,10 +5,13 @@ import co.edu.javeriana.eas.patterns.persistence.entities.*;
 import co.edu.javeriana.eas.patterns.persistence.repositories.*;
 import co.edu.javeriana.eas.patterns.quotation.dtos.*;
 import co.edu.javeriana.eas.patterns.quotation.enums.EQuotationFilter;
+import co.edu.javeriana.eas.patterns.quotation.enums.ERequestStatus;
 import co.edu.javeriana.eas.patterns.quotation.exceptions.QuotationException;
 import co.edu.javeriana.eas.patterns.quotation.exceptions.RequestQuotationException;
 import co.edu.javeriana.eas.patterns.quotation.mappers.QuotationMapper;
+import co.edu.javeriana.eas.patterns.quotation.services.INotificationService;
 import co.edu.javeriana.eas.patterns.quotation.services.IQuotationService;
+import co.edu.javeriana.eas.patterns.quotation.services.IRequestQuotationService;
 import co.edu.javeriana.eas.patterns.quotation.utilities.InputQuotationUtility;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -16,14 +19,20 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import javax.mail.MessagingException;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.concurrent.CompletableFuture;
 
 @Service
 public class QuotationServiceImpl implements IQuotationService {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(QuotationServiceImpl.class);
+
+    private INotificationService notificationService;
+    private IRequestQuotationService requestQuotationService;
 
     private InputQuotationUtility inputQuotationUtility;
     private IQuotationRepository quotationRepository;
@@ -52,8 +61,17 @@ public class QuotationServiceImpl implements IQuotationService {
     public QuotationWrapperDto createQuotation(QuotationWrapperDto quotationWrapperDto) throws QuotationCoreException {
         LOGGER.info("INICIA CREACIÓN DE NUEVA COTIZACION -> [{}]", quotationWrapperDto);
         QuotationEntity quotationEntity = createQuotationEntity(quotationWrapperDto);
-        createQuotationDetail(quotationWrapperDto.getDetails(), quotationEntity);
+        List<QuotationDetailEntity> productServiceList = createQuotationDetail(quotationWrapperDto.getDetails(), quotationEntity);
         LOGGER.info("FINALIZA CREACIÓN DE NUEVA COTIZACION -> [{}]", quotationWrapperDto);
+        CompletableFuture.runAsync(() -> {
+            try {
+                notificationService.sendNotification(quotationEntity, productServiceList);
+                requestQuotationService.createRequestQuotationHistorical(quotationEntity.getRequest(), ERequestStatus.IN_QUOTATION);
+                inputQuotationUtility.updateRequestQuotationStatus(ERequestStatus.IN_PROCESS.getStatus(), quotationEntity.getRequest().getId());
+            } catch (IOException | MessagingException | RequestQuotationException e) {
+                LOGGER.error("Error en notificación: ", e);
+            }
+        });
         return quotationWrapperDto;
     }
 
@@ -131,7 +149,8 @@ public class QuotationServiceImpl implements IQuotationService {
         return quotationEntity;
     }
 
-    private void createQuotationDetail(List<QuotationDetailDto> details, QuotationEntity requestQuotationEntity) throws RequestQuotationException {
+    private List<QuotationDetailEntity> createQuotationDetail(List<QuotationDetailDto> details, QuotationEntity requestQuotationEntity) throws RequestQuotationException {
+        List<QuotationDetailEntity> productServiceList = new ArrayList<>();
         for (QuotationDetailDto quotationDetailDto : details) {
             ProductServiceEntity productServiceEntity = inputQuotationUtility.getProductServiceEntity(quotationDetailDto.getProductId());
             QuotationDetailEntity quotationDetailEntity = new QuotationDetailEntity();
@@ -142,7 +161,19 @@ public class QuotationServiceImpl implements IQuotationService {
             quotationDetailEntity.setDiscount(quotationDetailDto.getDiscount());
             quotationDetailEntity.setDescription(quotationDetailDto.getDescription());
             quotationDetailRepository.save(quotationDetailEntity);
+            productServiceList.add(quotationDetailEntity);
         }
+        return productServiceList;
+    }
+
+    @Autowired
+    public void setNotificationService(INotificationService notificationService) {
+        this.notificationService = notificationService;
+    }
+
+    @Autowired
+    public void setRequestQuotationService(IRequestQuotationService requestQuotationService) {
+        this.requestQuotationService = requestQuotationService;
     }
 
     @Autowired

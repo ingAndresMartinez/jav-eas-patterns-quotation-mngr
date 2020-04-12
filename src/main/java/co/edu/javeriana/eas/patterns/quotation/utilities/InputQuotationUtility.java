@@ -46,6 +46,10 @@ public class InputQuotationUtility {
                 .orElseThrow(() -> new RequestQuotationException(EExceptionCode.REQUEST_QUOTATION_NOT_FOUND, "Cotización no existente."));
     }
 
+    public void updateRequestQuotationStatus(int status, int id) {
+        requestQuotationRepository.updateStatusById(status, id);
+    }
+
     public RequestStatusEntity getRequestStatusEntity(ERequestStatus eRequestStatus) throws RequestQuotationException {
         return requestStatusRepository.findById(eRequestStatus.getStatus())
                 .orElseThrow(() -> new RequestQuotationException(EExceptionCode.REQUEST_STATUS_NOT_FOUND, "Estado no existente."));

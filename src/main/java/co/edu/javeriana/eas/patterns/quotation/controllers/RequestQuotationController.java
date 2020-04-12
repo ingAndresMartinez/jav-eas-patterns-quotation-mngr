@@ -18,7 +18,7 @@ public class RequestQuotationController {
 
     private IRequestQuotationService requestQuotationService;
 
-    @GetMapping("/{filter}")
+    @PostMapping("/{filter}")
     public ResponseEntity<Object> getRequestQuotationByFilter(@PathVariable ERequestFilter filter, @RequestBody FindRequestQuotationDto findRequestQuotationDto) {
         try {
             List<RequestQuotationWrapperDto> bodyResponse = requestQuotationService.findRequestQuotationByFilter(filter, findRequestQuotationDto);

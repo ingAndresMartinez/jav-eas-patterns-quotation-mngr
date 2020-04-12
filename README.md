@@ -32,7 +32,7 @@ de diseño, en la Especialización de Arquitectura de Software Empresarial 2020 
             PERSON_CATEGORY,
             PERSON_STATUS
         </td>
-        <td>GET</td>
+        <td>POST</td>
         <td>200 - OK -</td>
         <td>400 - BAD_REQUEST - El filtro contiene valores incorrectos</td>
     </tr>
@@ -50,10 +50,10 @@ de diseño, en la Especialización de Arquitectura de Software Empresarial 2020 
             CATEGORY,
             PERSON,
             PROVIDER,
-                PERSON_CATEGORY,
-                REQUEST;
+            PERSON_CATEGORY,
+            REQUEST;
         </td>
-        <td>GET</td>
+        <td>POST</td>
         <td>200 - OK -</td>
         <td>400 - BAD_REQUEST - El filtro contiene valores incorrectos</td>
     </tr>
