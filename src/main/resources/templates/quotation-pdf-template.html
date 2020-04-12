@@ -1,0 +1,99 @@
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.thymeleaf.org" lang="es">
+<head>
+    <meta charset="UTF-8"/>
+    <title>Cotizacion</title>
+    <link href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" rel="stylesheet"
+          id="bootstrap-css"/>
+</head>
+<main class="container pt-5">
+    <div class="card mb-5">
+        <div class="card-header">INFORMACIÓN BASICA</div>
+        <div class="card-block p-0">
+            <table class="table table-bordered table-definition mb-5">
+                <thead class="table-warning ">
+                <tr>
+                    <th>NÚMERO COTIZACIÓN</th>
+                    <th>NÚMERO SOLICITUD</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr>
+                    <td>[[${quotationId}]]</td>
+                    <td>[[${requestQuotationId}]]</td>
+                </tr>
+                </tbody>
+                <thead class="table-warning">
+                <tr>
+                    <th>INFORMACIÓN CLIENTE</th>
+                </tr>
+                </thead>
+                <thead class="table-warning ">
+                <tr>
+                    <th>NOMBRE</th>
+                    <th>APELLIDO</th>
+                    <th>CORREO</th>
+                    <th>TELEFONO</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr>
+                    <td>[[${firstName}]]</td>
+                    <td>[[${lastName}]]</td>
+                    <td>[[${email}]]</td>
+                    <td>[[${phone}]]</td>
+                </tr>
+                </tbody>
+                <thead class="table-warning">
+                <tr>
+                    <th>INFORMACIÓN PROVEEDOR</th>
+                </tr>
+                </thead>
+                <thead class="table-warning ">
+                <tr>
+                    <th>ID</th>
+                    <th>PROVEEDOR</th>
+                    <th>CORREO</th>
+                    <th>TELEFONO</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr>
+                    <td>[[${providerId}]]</td>
+                    <td>[[${providerName}]]</td>
+                    <td>[[${providerEmail}]]</td>
+                    <td>[[${providerPhone}]]</td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+        <div class="card mb-5">
+            <div class="card-header">PRODUCTOS</div>
+            <div class="card-block p-0">
+                <table class="table table-bordered table-definition mb-5">
+                    <thead class="table-warning ">
+                    <tr>
+                        <th>ID</th>
+                        <th>DESCRIPCIÓN</th>
+                        <th>CANTIDAD</th>
+                        <th>MONTO</th>
+                        <th>DESCUENTO</th>
+                        <th>INFORMACION ADICIONAL</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr th:each="item: ${itemsList}">
+                        <td th:text="${item.productService.id}"/>
+                        <td th:text="${item.productService.description}"/>
+                        <td th:text="${item.quantity}"/>
+                        <td th:text="${item.amount}"/>
+                        <td th:text="${item.discount}"/>
+                        <td th:text="${item.description}"/>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</main>
+</html>

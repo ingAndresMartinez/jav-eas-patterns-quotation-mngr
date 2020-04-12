@@ -18,7 +18,7 @@ public class QuotationController {
 
     private IQuotationService quotationService;
 
-    @GetMapping("/{filter}")
+    @PostMapping("/{filter}")
     public ResponseEntity<Object> getQuotationByFilter(@PathVariable EQuotationFilter filter, @RequestBody FindQuotationDto findQuotationDto) {
         try {
             List<QuotationWrapperDto> bodyResponse = quotationService.findQuotationByFilter(filter, findQuotationDto);

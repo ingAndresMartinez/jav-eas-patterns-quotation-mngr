@@ -61,6 +61,15 @@ public class RequestQuotationServiceImpl implements IRequestQuotationService {
         return requestQuotationWrapperDto;
     }
 
+    @Override
+    public void createRequestQuotationHistorical(RequestQuotationEntity requestQuotationEntity, ERequestStatus eRequestStatus) throws RequestQuotationException {
+        RequestStatusEntity requestStatusEntity = inputQuotationUtility.getRequestStatusEntity(eRequestStatus);
+        RequestQuotationHistoricalEntity requestQuotationHistoricalEntity = new RequestQuotationHistoricalEntity();
+        requestQuotationHistoricalEntity.setRequest(requestQuotationEntity);
+        requestQuotationHistoricalEntity.setStatus(requestStatusEntity);
+        requestQuotationHistoricalRepository.save(requestQuotationHistoricalEntity);
+    }
+
     private List<RequestQuotationEntity> getRequestQuotation(ERequestFilter filter, FindRequestQuotationDto findRequestQuotationDto) throws RequestQuotationException {
         CategoryEntity categoryEntity;
         PersonEntity personEntity;
@@ -139,14 +148,6 @@ public class RequestQuotationServiceImpl implements IRequestQuotationService {
             requestQuotationDetailEntity.setProductService(productServiceEntity);
             requestQuotationDetailRepository.save(requestQuotationDetailEntity);
         }
-    }
-
-    private void createRequestQuotationHistorical(RequestQuotationEntity requestQuotationEntity, ERequestStatus eRequestStatus) throws RequestQuotationException {
-        RequestStatusEntity requestStatusEntity = inputQuotationUtility.getRequestStatusEntity(eRequestStatus);
-        RequestQuotationHistoricalEntity requestQuotationHistoricalEntity = new RequestQuotationHistoricalEntity();
-        requestQuotationHistoricalEntity.setRequest(requestQuotationEntity);
-        requestQuotationHistoricalEntity.setStatus(requestStatusEntity);
-        requestQuotationHistoricalRepository.save(requestQuotationHistoricalEntity);
     }
 
     @Autowired

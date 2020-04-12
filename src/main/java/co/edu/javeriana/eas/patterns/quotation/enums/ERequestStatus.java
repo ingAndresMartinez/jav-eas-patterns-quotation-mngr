@@ -4,7 +4,7 @@ public enum ERequestStatus {
 
     REGISTERED(1),
     IN_PROCESS(2),
-    IN_REQUEST(3),
+    IN_QUOTATION(3),
     FINISHED(4);
 
     private int status;

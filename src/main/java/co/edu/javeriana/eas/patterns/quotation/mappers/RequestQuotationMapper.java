@@ -50,8 +50,8 @@ public class RequestQuotationMapper {
         if (ERequestStatus.IN_PROCESS.getStatus() == status) {
             eRequestStatus = ERequestStatus.IN_PROCESS;
         }
-        if (ERequestStatus.IN_REQUEST.getStatus() == status) {
-            eRequestStatus = ERequestStatus.IN_REQUEST;
+        if (ERequestStatus.IN_QUOTATION.getStatus() == status) {
+            eRequestStatus = ERequestStatus.IN_QUOTATION;
         }
         if (ERequestStatus.FINISHED.getStatus() == status) {
             eRequestStatus = ERequestStatus.FINISHED;
