@@ -1,15 +1,15 @@
 package co.edu.javeriana.eas.patterns.quotation.services.impl;
 
+import co.edu.javeriana.eas.patterns.common.dto.quotation.RequestQuotationDetailDto;
+import co.edu.javeriana.eas.patterns.common.dto.quotation.RequestQuotationWrapperDto;
+import co.edu.javeriana.eas.patterns.common.enums.ERequestStatus;
 import co.edu.javeriana.eas.patterns.persistence.entities.*;
 import co.edu.javeriana.eas.patterns.persistence.repositories.IRequestQuotationDetailRepository;
 import co.edu.javeriana.eas.patterns.persistence.repositories.IRequestQuotationHistoricalRepository;
 import co.edu.javeriana.eas.patterns.persistence.repositories.IRequestQuotationRepository;
 import co.edu.javeriana.eas.patterns.quotation.dtos.FindRequestQuotationDto;
-import co.edu.javeriana.eas.patterns.quotation.dtos.RequestQuotationDetailDto;
 import co.edu.javeriana.eas.patterns.quotation.dtos.RequestQuotationEntityWrapper;
-import co.edu.javeriana.eas.patterns.quotation.dtos.RequestQuotationWrapperDto;
 import co.edu.javeriana.eas.patterns.quotation.enums.ERequestFilter;
-import co.edu.javeriana.eas.patterns.quotation.enums.ERequestStatus;
 import co.edu.javeriana.eas.patterns.quotation.exceptions.RequestQuotationException;
 import co.edu.javeriana.eas.patterns.quotation.mappers.RequestQuotationMapper;
 import co.edu.javeriana.eas.patterns.quotation.services.IRequestQuotationService;

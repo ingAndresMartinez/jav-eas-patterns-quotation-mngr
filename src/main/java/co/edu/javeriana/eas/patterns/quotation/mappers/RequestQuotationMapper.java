@@ -1,11 +1,11 @@
 package co.edu.javeriana.eas.patterns.quotation.mappers;
 
+import co.edu.javeriana.eas.patterns.common.dto.quotation.RequestQuotationDetailDto;
+import co.edu.javeriana.eas.patterns.common.dto.quotation.RequestQuotationWrapperDto;
+import co.edu.javeriana.eas.patterns.common.enums.ERequestStatus;
 import co.edu.javeriana.eas.patterns.persistence.entities.RequestQuotationDetailEntity;
 import co.edu.javeriana.eas.patterns.persistence.entities.RequestQuotationEntity;
 import co.edu.javeriana.eas.patterns.persistence.entities.RequestStatusEntity;
-import co.edu.javeriana.eas.patterns.quotation.dtos.RequestQuotationDetailDto;
-import co.edu.javeriana.eas.patterns.quotation.dtos.RequestQuotationWrapperDto;
-import co.edu.javeriana.eas.patterns.quotation.enums.ERequestStatus;
 
 import java.util.ArrayList;
 import java.util.List;

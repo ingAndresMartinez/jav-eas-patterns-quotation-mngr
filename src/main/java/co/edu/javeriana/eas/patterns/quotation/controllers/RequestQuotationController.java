@@ -1,7 +1,7 @@
 package co.edu.javeriana.eas.patterns.quotation.controllers;
 
+import co.edu.javeriana.eas.patterns.common.dto.quotation.RequestQuotationWrapperDto;
 import co.edu.javeriana.eas.patterns.quotation.dtos.FindRequestQuotationDto;
-import co.edu.javeriana.eas.patterns.quotation.dtos.RequestQuotationWrapperDto;
 import co.edu.javeriana.eas.patterns.quotation.enums.ERequestFilter;
 import co.edu.javeriana.eas.patterns.quotation.exceptions.RequestQuotationException;
 import co.edu.javeriana.eas.patterns.quotation.services.IRequestQuotationService;
