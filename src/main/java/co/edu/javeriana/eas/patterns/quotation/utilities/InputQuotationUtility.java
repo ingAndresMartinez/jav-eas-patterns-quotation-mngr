@@ -1,9 +1,9 @@
 package co.edu.javeriana.eas.patterns.quotation.utilities;
 
 import co.edu.javeriana.eas.patterns.common.enums.EExceptionCode;
+import co.edu.javeriana.eas.patterns.common.enums.ERequestStatus;
 import co.edu.javeriana.eas.patterns.persistence.entities.*;
 import co.edu.javeriana.eas.patterns.persistence.repositories.*;
-import co.edu.javeriana.eas.patterns.quotation.enums.ERequestStatus;
 import co.edu.javeriana.eas.patterns.quotation.exceptions.RequestQuotationException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;

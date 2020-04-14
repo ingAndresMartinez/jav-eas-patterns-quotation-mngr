@@ -1,11 +1,13 @@
 package co.edu.javeriana.eas.patterns.quotation.services.impl;
 
+import co.edu.javeriana.eas.patterns.common.dto.quotation.QuotationDetailDto;
+import co.edu.javeriana.eas.patterns.common.dto.quotation.QuotationWrapperDto;
+import co.edu.javeriana.eas.patterns.common.enums.ERequestStatus;
 import co.edu.javeriana.eas.patterns.common.exceptions.QuotationCoreException;
 import co.edu.javeriana.eas.patterns.persistence.entities.*;
 import co.edu.javeriana.eas.patterns.persistence.repositories.*;
 import co.edu.javeriana.eas.patterns.quotation.dtos.*;
 import co.edu.javeriana.eas.patterns.quotation.enums.EQuotationFilter;
-import co.edu.javeriana.eas.patterns.quotation.enums.ERequestStatus;
 import co.edu.javeriana.eas.patterns.quotation.exceptions.QuotationException;
 import co.edu.javeriana.eas.patterns.quotation.exceptions.RequestQuotationException;
 import co.edu.javeriana.eas.patterns.quotation.mappers.QuotationMapper;
@@ -18,6 +20,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.client.RestTemplate;
 
 import javax.mail.MessagingException;
 import java.io.IOException;
@@ -67,7 +70,7 @@ public class QuotationServiceImpl implements IQuotationService {
             try {
                 notificationService.sendNotification(quotationEntity, productServiceList);
                 requestQuotationService.createRequestQuotationHistorical(quotationEntity.getRequest(), ERequestStatus.IN_QUOTATION);
-                inputQuotationUtility.updateRequestQuotationStatus(ERequestStatus.IN_PROCESS.getStatus(), quotationEntity.getRequest().getId());
+                requestQuotationService.updateRequestStatusQuotation(ERequestStatus.IN_QUOTATION, quotationEntity.getRequest().getId());
             } catch (IOException | MessagingException | RequestQuotationException e) {
                 LOGGER.error("Error en notificación: ", e);
             }

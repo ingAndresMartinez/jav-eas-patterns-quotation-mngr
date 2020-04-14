@@ -1,8 +1,8 @@
 package co.edu.javeriana.eas.patterns.quotation.mappers;
 
+import co.edu.javeriana.eas.patterns.common.dto.quotation.QuotationDetailDto;
+import co.edu.javeriana.eas.patterns.common.dto.quotation.QuotationWrapperDto;
 import co.edu.javeriana.eas.patterns.persistence.entities.*;
-import co.edu.javeriana.eas.patterns.quotation.dtos.QuotationDetailDto;
-import co.edu.javeriana.eas.patterns.quotation.dtos.QuotationWrapperDto;
 
 import java.util.ArrayList;
 import java.util.List;

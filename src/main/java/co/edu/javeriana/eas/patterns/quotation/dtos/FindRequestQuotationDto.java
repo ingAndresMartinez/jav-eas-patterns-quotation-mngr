@@ -1,6 +1,6 @@
 package co.edu.javeriana.eas.patterns.quotation.dtos;
 
-import co.edu.javeriana.eas.patterns.quotation.enums.ERequestStatus;
+import co.edu.javeriana.eas.patterns.common.enums.ERequestStatus;
 
 public class FindRequestQuotationDto {
 
