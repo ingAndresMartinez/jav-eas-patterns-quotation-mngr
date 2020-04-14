@@ -1,6 +1,7 @@
 package co.edu.javeriana.eas.patterns.quotation.controllers;
 
 import co.edu.javeriana.eas.patterns.common.dto.quotation.RequestQuotationWrapperDto;
+import co.edu.javeriana.eas.patterns.common.dto.quotation.UpdateRequestQuotationStateDto;
 import co.edu.javeriana.eas.patterns.quotation.dtos.FindRequestQuotationDto;
 import co.edu.javeriana.eas.patterns.quotation.enums.ERequestFilter;
 import co.edu.javeriana.eas.patterns.quotation.exceptions.RequestQuotationException;
@@ -35,6 +36,16 @@ public class RequestQuotationController {
             return new ResponseEntity<>(bodyResponse, HttpStatus.CREATED);
         } catch (RequestQuotationException e) {
             return new ResponseEntity<>(e.getExceptionCode().getCode(), HttpStatus.NOT_ACCEPTABLE);
+        }
+    }
+
+    @PostMapping("/status")
+    public ResponseEntity<Void> updateRequestQuotationStatus(@RequestBody UpdateRequestQuotationStateDto updateRequestQuotationStateDto) {
+        try {
+            requestQuotationService.updateRequestStatusQuotation(updateRequestQuotationStateDto.geteRequestStatus(), updateRequestQuotationStateDto.getRequestId());
+            return new ResponseEntity<>(HttpStatus.ACCEPTED);
+        } catch (Exception e) {
+            return new ResponseEntity<>(HttpStatus.NOT_ACCEPTABLE);
         }
     }
 

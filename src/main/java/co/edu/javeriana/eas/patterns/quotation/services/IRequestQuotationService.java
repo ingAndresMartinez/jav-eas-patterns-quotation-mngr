@@ -18,4 +18,6 @@ public interface IRequestQuotationService {
 
     void createRequestQuotationHistorical(RequestQuotationEntity requestQuotationEntity, ERequestStatus eRequestStatus) throws RequestQuotationException;
 
+    void updateRequestStatusQuotation(ERequestStatus eRequestStatus, int requestId) throws RequestQuotationException;
+
 }

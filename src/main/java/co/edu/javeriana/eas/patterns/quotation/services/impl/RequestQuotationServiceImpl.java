@@ -2,6 +2,7 @@ package co.edu.javeriana.eas.patterns.quotation.services.impl;
 
 import co.edu.javeriana.eas.patterns.common.dto.quotation.RequestQuotationDetailDto;
 import co.edu.javeriana.eas.patterns.common.dto.quotation.RequestQuotationWrapperDto;
+import co.edu.javeriana.eas.patterns.common.enums.EExceptionCode;
 import co.edu.javeriana.eas.patterns.common.enums.ERequestStatus;
 import co.edu.javeriana.eas.patterns.persistence.entities.*;
 import co.edu.javeriana.eas.patterns.persistence.repositories.IRequestQuotationDetailRepository;
@@ -19,8 +20,11 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.client.HttpClientErrorException;
+import org.springframework.web.client.RestTemplate;
 
 import java.util.*;
+import java.util.concurrent.CompletableFuture;
 
 @Service
 public class RequestQuotationServiceImpl implements IRequestQuotationService {
@@ -31,6 +35,8 @@ public class RequestQuotationServiceImpl implements IRequestQuotationService {
     private IRequestQuotationRepository requestQuotationRepository;
     private IRequestQuotationDetailRepository requestQuotationDetailRepository;
     private IRequestQuotationHistoricalRepository requestQuotationHistoricalRepository;
+
+    private RestTemplate restTemplate;
 
     @Override
     public List<RequestQuotationWrapperDto> findRequestQuotationByFilter(ERequestFilter filter, FindRequestQuotationDto findRequestQuotationDto)
@@ -57,6 +63,9 @@ public class RequestQuotationServiceImpl implements IRequestQuotationService {
         RequestQuotationEntity requestQuotationEntity = createRequestQuotationEntity(requestQuotationWrapperDto);
         createRequestQuotationDetail(requestQuotationWrapperDto.getDetails(), requestQuotationEntity);
         createRequestQuotationHistorical(requestQuotationEntity, ERequestStatus.REGISTERED);
+        CompletableFuture.runAsync(() -> {
+            notificationToProviders(requestQuotationWrapperDto);
+        });
         LOGGER.info("FINALIZA CREACIÓN DE NUEVA SOLICITUD -> [{}]", requestQuotationWrapperDto);
         return requestQuotationWrapperDto;
     }
@@ -68,6 +77,17 @@ public class RequestQuotationServiceImpl implements IRequestQuotationService {
         requestQuotationHistoricalEntity.setRequest(requestQuotationEntity);
         requestQuotationHistoricalEntity.setStatus(requestStatusEntity);
         requestQuotationHistoricalRepository.save(requestQuotationHistoricalEntity);
+    }
+
+    @Override
+    @Transactional(rollbackFor = RequestQuotationException.class)
+    public void updateRequestStatusQuotation(ERequestStatus eRequestStatus, int requestId) throws RequestQuotationException {
+        LOGGER.info("INICIA ACTUALIZACIÓN DE ESTADO SOLICITUD Y CREACIÓN DE HISTORICO -> [{}]", requestId);
+        inputQuotationUtility.updateRequestQuotationStatus(eRequestStatus.getStatus(), requestId);
+        RequestQuotationEntity requestQuotationEntity = requestQuotationRepository.findById(requestId).
+                orElseThrow(() -> new RequestQuotationException(EExceptionCode.PERSON_NOT_FOUND, "Id cotizacion no existente."));
+        createRequestQuotationHistorical(requestQuotationEntity, eRequestStatus);
+        LOGGER.info("FINALIZA ACTUALIZACIÓN DE ESTADO SOLICITUD Y CREACIÓN DE HISTORICO -> [{}]", requestId);
     }
 
     private List<RequestQuotationEntity> getRequestQuotation(ERequestFilter filter, FindRequestQuotationDto findRequestQuotationDto) throws RequestQuotationException {
@@ -148,6 +168,21 @@ public class RequestQuotationServiceImpl implements IRequestQuotationService {
             requestQuotationDetailEntity.setProductService(productServiceEntity);
             requestQuotationDetailRepository.save(requestQuotationDetailEntity);
         }
+    }
+
+    private void notificationToProviders(RequestQuotationWrapperDto requestQuotationWrapperDto) {
+        LOGGER.info("inicia proceso de notificacion al proveedor por categoria [{}].", requestQuotationWrapperDto.getCategoryId());
+        try {
+            restTemplate.postForEntity("http://localhost:7074/advisor/notification-provider/" + requestQuotationWrapperDto.getCategoryId(), requestQuotationWrapperDto, Void.class);
+        } catch (HttpClientErrorException e) {
+            LOGGER.error("Error en notificacion a proveedor externo: ", e);
+        }
+        LOGGER.info("finaliza proceso de notificacion al proveedor [{}].", requestQuotationWrapperDto.getCategoryId());
+    }
+
+    @Autowired
+    public void setRestTemplate(RestTemplate restTemplate) {
+        this.restTemplate = restTemplate;
     }
 
     @Autowired
