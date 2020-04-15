@@ -5,9 +5,7 @@ import co.edu.javeriana.eas.patterns.common.dto.quotation.RequestQuotationWrappe
 import co.edu.javeriana.eas.patterns.common.enums.EExceptionCode;
 import co.edu.javeriana.eas.patterns.common.enums.ERequestStatus;
 import co.edu.javeriana.eas.patterns.persistence.entities.*;
-import co.edu.javeriana.eas.patterns.persistence.repositories.IRequestQuotationDetailRepository;
-import co.edu.javeriana.eas.patterns.persistence.repositories.IRequestQuotationHistoricalRepository;
-import co.edu.javeriana.eas.patterns.persistence.repositories.IRequestQuotationRepository;
+import co.edu.javeriana.eas.patterns.persistence.repositories.*;
 import co.edu.javeriana.eas.patterns.quotation.dtos.FindRequestQuotationDto;
 import co.edu.javeriana.eas.patterns.quotation.dtos.RequestQuotationEntityWrapper;
 import co.edu.javeriana.eas.patterns.quotation.enums.ERequestFilter;
@@ -35,6 +33,8 @@ public class RequestQuotationServiceImpl implements IRequestQuotationService {
     private IRequestQuotationRepository requestQuotationRepository;
     private IRequestQuotationDetailRepository requestQuotationDetailRepository;
     private IRequestQuotationHistoricalRepository requestQuotationHistoricalRepository;
+    private IRequestProviderRepository requestProviderRepository;
+    private IProviderRepository providerRepository;
 
     private RestTemplate restTemplate;
 
@@ -94,6 +94,7 @@ public class RequestQuotationServiceImpl implements IRequestQuotationService {
         CategoryEntity categoryEntity;
         PersonEntity personEntity;
         RequestStatusEntity requestStatusEntity;
+        ProviderEntity providerEntity;
         List<RequestQuotationEntity> requestQuotationEntities = new ArrayList<>();
         switch (filter) {
             case CATEGORY:
@@ -113,6 +114,14 @@ public class RequestQuotationServiceImpl implements IRequestQuotationService {
                 personEntity = inputQuotationUtility.getPersonEntity(findRequestQuotationDto.getPersonId());
                 requestStatusEntity = inputQuotationUtility.getRequestStatusEntity(findRequestQuotationDto.getStatusId());
                 requestQuotationEntities = requestQuotationRepository.findByPersonAndStatus(personEntity, requestStatusEntity);
+                break;
+            case PROVIDER:
+                providerEntity = providerRepository.findById(findRequestQuotationDto.getProviderId())
+                        .orElseThrow(() -> new RequestQuotationException(EExceptionCode.PROVIDER_NOT_FOUND, "Provedor no existente."));
+                List<RequestProviderEntity> pendingRequestByProvider = requestProviderRepository.findByProviderAndNotified(providerEntity, 0);
+                List<RequestQuotationEntity> finalRequestQuotationEntities = requestQuotationEntities;
+                pendingRequestByProvider.forEach(requestProviderEntity -> finalRequestQuotationEntities.add(requestProviderEntity.getRequest()));
+                requestQuotationEntities = finalRequestQuotationEntities;
                 break;
             default:
                 Iterable<Integer> iter = Collections.singletonList(findRequestQuotationDto.getRequestQuotationId());
@@ -205,4 +214,13 @@ public class RequestQuotationServiceImpl implements IRequestQuotationService {
         this.requestQuotationHistoricalRepository = requestQuotationHistoricalRepository;
     }
 
+    @Autowired
+    public void setRequestProviderRepository(IRequestProviderRepository requestProviderRepository) {
+        this.requestProviderRepository = requestProviderRepository;
+    }
+
+    @Autowired
+    public void setProviderRepository(IProviderRepository providerRepository) {
+        this.providerRepository = providerRepository;
+    }
 }

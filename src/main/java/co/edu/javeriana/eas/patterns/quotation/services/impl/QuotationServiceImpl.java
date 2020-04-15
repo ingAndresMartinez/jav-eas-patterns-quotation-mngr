@@ -20,7 +20,6 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.client.RestTemplate;
 
 import javax.mail.MessagingException;
 import java.io.IOException;
@@ -40,6 +39,7 @@ public class QuotationServiceImpl implements IQuotationService {
     private InputQuotationUtility inputQuotationUtility;
     private IQuotationRepository quotationRepository;
     private IQuotationDetailRepository quotationDetailRepository;
+    private IRequestProviderRepository requestProviderRepository;
 
     @Override
     public List<QuotationWrapperDto> findQuotationByFilter(EQuotationFilter filter, FindQuotationDto findQuotationDto)
@@ -71,6 +71,9 @@ public class QuotationServiceImpl implements IQuotationService {
                 notificationService.sendNotification(quotationEntity, productServiceList);
                 requestQuotationService.createRequestQuotationHistorical(quotationEntity.getRequest(), ERequestStatus.IN_QUOTATION);
                 requestQuotationService.updateRequestStatusQuotation(ERequestStatus.IN_QUOTATION, quotationEntity.getRequest().getId());
+                RequestProviderEntity requestProviderEntity = requestProviderRepository.findByProviderAndAndRequest(quotationEntity.getProvider(), quotationEntity.getRequest());
+                requestProviderEntity.setNotified(1);
+                requestProviderRepository.save(requestProviderEntity);
             } catch (IOException | MessagingException | RequestQuotationException e) {
                 LOGGER.error("Error en notificación: ", e);
             }
@@ -194,4 +197,8 @@ public class QuotationServiceImpl implements IQuotationService {
         this.quotationDetailRepository = quotationDetailRepository;
     }
 
+    @Autowired
+    public void setRequestProviderRepository(IRequestProviderRepository requestProviderRepository) {
+        this.requestProviderRepository = requestProviderRepository;
+    }
 }

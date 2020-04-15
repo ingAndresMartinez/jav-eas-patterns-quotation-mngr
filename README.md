@@ -30,7 +30,8 @@ de diseño, en la Especialización de Arquitectura de Software Empresarial 2020 
             ID,
             PERSON,
             PERSON_CATEGORY,
-            PERSON_STATUS
+            PERSON_STATUS,
+            PROVIDER
         </td>
         <td>POST</td>
         <td>200 - OK -</td>

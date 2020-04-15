@@ -7,6 +7,7 @@ public class FindRequestQuotationDto {
     private int categoryId;
     private int personId;
     private int requestQuotationId;
+    private int providerId;
     private ERequestStatus statusId;
 
     public int getCategoryId() {
@@ -33,6 +34,14 @@ public class FindRequestQuotationDto {
         this.requestQuotationId = requestQuotationId;
     }
 
+    public int getProviderId() {
+        return providerId;
+    }
+
+    public void setProviderId(int providerId) {
+        this.providerId = providerId;
+    }
+
     public ERequestStatus getStatusId() {
         return statusId;
     }
@@ -47,8 +56,9 @@ public class FindRequestQuotationDto {
                 "categoryId=" + categoryId +
                 ", personId=" + personId +
                 ", requestQuotationId=" + requestQuotationId +
+                ", providerId=" + providerId +
                 ", statusId=" + statusId +
                 '}';
     }
-
+    
 }
