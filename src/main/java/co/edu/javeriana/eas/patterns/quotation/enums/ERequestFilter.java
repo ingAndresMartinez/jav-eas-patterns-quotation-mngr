@@ -6,6 +6,6 @@ public enum ERequestFilter {
     ID,
     PERSON,
     PERSON_CATEGORY,
-    PERSON_STATUS
-
+    PERSON_STATUS,
+    PROVIDER
 }
