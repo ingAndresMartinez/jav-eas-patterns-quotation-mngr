@@ -49,6 +49,7 @@ public class NotificationServiceImpl implements INotificationService {
         model.put("providerName", quotationEntity.getProvider().getBusinessName());
         model.put("providerPhone", quotationEntity.getProvider().getPhoneNumber());
         model.put("itemsList", listProductServices);
+        model.put("totalAmount", quotationEntity.getAmount());
         return pdfQuotationService.createFileToAttachment(model);
     }
 
